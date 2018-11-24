@@ -1,11 +1,13 @@
 // Required
 var express = require('express');
 var bcrypt = require('bcryptjs');
+var jwt = require('jsonwebtoken');
 
 //Inicializar Variables
 var app = express();
-
+var mdAutenticacion = require('../middlewares/autenticacion');
 var Usuario = require('../models/usuario');
+
 
 //Rutas
 
@@ -32,11 +34,13 @@ app.get('/', (req, res, next) => {
         });
 });
 
+
+
 //===============================================
 //                   Usuario Post
 //===============================================
 
-app.post('/', (req, res) => {
+app.post('/', mdAutenticacion.verificaToken, (req, res) => {
 
     var body = req.body;
 
@@ -59,7 +63,8 @@ app.post('/', (req, res) => {
 
         res.status(201).json({
             ok: true,
-            usuario: usuarioGuardado
+            usuario: usuarioGuardado,
+            usuarioToken: req.usuario
         });
 
     });
@@ -70,15 +75,86 @@ app.post('/', (req, res) => {
 //                   Actualizar Usuario
 //===============================================
 
-app.put('/${id}', (req, resp) => {
+app.put('/:id', mdAutenticacion.verificaToken, (req, res) => {
 
+    var id = req.params.id;
     var body = req.body;
 
-    console.log(body);
+    Usuario.findById(id, (err, usuario) => {
 
-    res.status(201).json({
-        ok: true,
-        usuario: 'ok'
+        if (err) {
+            res.status(500).json({
+                ok: false,
+                mensaje: 'error al buscar el usuario con id' + id,
+                errors: err
+            });
+        }
+
+        if (!usuario) {
+            res.status(400).json({
+                ok: false,
+                mensaje: 'el usuario no se encuentra ',
+                errors: err
+            });
+        }
+
+        usuario.nombre = body.nombre;
+        usuario.mail = body.email;
+        usuario.role = body.role;
+
+        usuario.save((err, usuarioGuardado) => {
+
+            if (err) {
+                res.status(400).json({
+                    ok: false,
+                    mensaje: 'error al actualizar  el usuario con id' + id,
+                    errors: err
+                });
+            }
+
+            res.status(200).json({
+                ok: true,
+                usuario: usuarioGuardado
+            });
+
+
+        });
+
+    });
+
+});
+
+//===============================================
+//         Eliminarcion de Usuario          
+//===============================================
+
+app.delete('/:id', mdAutenticacion.verificaToken, (req, res) => {
+
+    var id = req.params.id;
+
+    Usuario.findByIdAndRemove(id, (err, usuarioEliminado) => {
+
+        if (err) {
+            res.status(500).json({
+                ok: false,
+                mensaje: 'error al borrar el usuario con id' + id,
+                errors: err
+            });
+        }
+
+        if (!usuarioEliminado) {
+            res.status(400).json({
+                ok: false,
+                mensaje: 'No existe un usuario con id' + id,
+                errors: { message: 'No existe un usuario con id' + id }
+            });
+        }
+
+        res.status(200).json({
+            ok: true,
+            usuario: usuarioEliminado
+        });
+
     });
 
 });

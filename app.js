@@ -7,6 +7,7 @@ var bodyParser = require('body-parser');
 
 var appRoutes = require('./routes/app');
 var usuarioRoutes = require('./routes/usuario');
+var loginRoutes = require('./routes/login');
 
 //Inicializar Variables
 
@@ -29,6 +30,7 @@ mongoose.connection.openUri('mongodb://localhost:27017/hospitalDB', (err, resp) 
 
 /////Routes
 app.use('/usuario', usuarioRoutes)
+app.use('/login', loginRoutes)
 app.use('/', appRoutes);
 
 
