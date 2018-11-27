@@ -8,6 +8,10 @@ var bodyParser = require('body-parser');
 var appRoutes = require('./routes/app');
 var usuarioRoutes = require('./routes/usuario');
 var loginRoutes = require('./routes/login');
+var hospitalRoutes = require('./routes/hospital');
+var medicosRoutes = require('./routes/medico');
+var busquedaRoutes = require('./routes/busqueda');
+var uploadsRoutes = require('./routes/upload');
 
 //Inicializar Variables
 
@@ -29,8 +33,14 @@ mongoose.connection.openUri('mongodb://localhost:27017/hospitalDB', (err, resp) 
 });
 
 /////Routes
-app.use('/usuario', usuarioRoutes)
-app.use('/login', loginRoutes)
+app.use('/usuario', usuarioRoutes);
+app.use('/login', loginRoutes);
+app.use('/hospital', hospitalRoutes);
+app.use('/medico', medicosRoutes);
+app.use('/busqueda', busquedaRoutes);
+app.use('/upload', uploadsRoutes);
+
+//Al ultimo sino siempre entraria por aqui.
 app.use('/', appRoutes);
 
 
