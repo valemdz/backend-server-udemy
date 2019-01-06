@@ -55,6 +55,7 @@ app.get('/coleccion/:tabla/:busqueda', (req, res) => {
             break;
         case 'usuarios':
             promesa = buscarUsuarios(busqueda, regexp);
+            break;
         default:
             res.status(400).json({
                 ok: false,
@@ -113,7 +114,7 @@ function buscarUsuarios(busqueda, regexp) {
 
     return new Promise((resolve, reject) => {
 
-        Usuario.find({}, ' nombre email role')
+        Usuario.find({}, ' nombre email role img google ')
             .or([{ 'nombre': regexp }, { 'email': regexp }])
             .exec((err, usuarios) => {
                 if (err) {

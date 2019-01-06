@@ -19,6 +19,15 @@ var imagenesRoutes = require('./routes/imagenes');
 var app = express();
 
 
+///CORS
+app.use(function(req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    res.header("Access-Control-Allow-Methods", "POST, PUT, GET, DELETE, OPTIONS");
+    next();
+});
+
+
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }))
 
@@ -32,6 +41,8 @@ mongoose.connection.openUri('mongodb://localhost:27017/hospitalDB', (err, resp) 
     console.log('Base de Datos : \x1b[32m', 'online');
 
 });
+
+
 
 //Server index config
 
