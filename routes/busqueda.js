@@ -30,7 +30,7 @@ app.get('/todo/:busqueda', (req, res, next) => {
                 mensaje: 'Busqueda de todo ' + busqueda,
                 hospitales: respuestas[0],
                 medicos: respuestas[1],
-                usuario: respuestas[2]
+                usuarios: respuestas[2]
             });
         });
 });
